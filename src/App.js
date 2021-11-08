@@ -1,23 +1,41 @@
-import logo from './logo.svg';
+import React,{useState, useEffect} from 'react'
 import './App.css';
+// import {data} from './util/mockdata'
+import axios from 'axios';
 
 function App() {
+  const [searchTerm,setSearchTerm] = useState('')
+  const [searchedData, setData] = useState('')
+
+  useEffect(() => {
+    // Using an IIFE
+    const searchTitle = async() => {
+      const fetchData = [];
+        const response = await axios.get('https://jsonplaceholder.typicode.com/albums');
+        const data = response.data;
+        await data.filter((val)=>{
+        if(searchTerm === ""){
+          return val
+        }
+        else if(val.title.toLowerCase().includes(searchTerm.toLowerCase())){
+          return val;
+        }
+      }).map((val, key) => {
+        let re = new RegExp(searchTerm , 'g');
+        let str = val.title.replace(re, `<mark>${searchTerm}</mark>`);
+        fetchData.push(<li dangerouslySetInnerHTML={{
+          __html: str
+      }} />)
+      });
+      setData(fetchData)
+    };
+    searchTitle();
+  }, [searchedData]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input type="text" placeholder="search..." onChange={e=>setSearchTerm(e.target.value)} />
+      {searchedData}
     </div>
   );
 }
