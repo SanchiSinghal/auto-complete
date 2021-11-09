@@ -19,7 +19,7 @@ ul {
 }
 li {
   padding: 8px;
-  text-transform: capitalize;
+  text-transform: uppercase;
 }
 li:nth-child(odd) {
   background-color: #f2f2f2;
